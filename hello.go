@@ -1,5 +1,5 @@
 // from https://zetcode.com/golang/net-html/
-package main
+package burnban
 
 import (
 	"fmt"
@@ -11,6 +11,24 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 )
+
+func scrape(url string) *goquery.Document {
+	res, err := http.Get(url)
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer res.Body.Close()
+  if res.StatusCode != 200 {
+    log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+  }
+
+  // Load the HTML document
+  doc, err := goquery.NewDocumentFromReader(res.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+	return doc
+}
 
 func ExampleScrape() string {
   // Request the HTML page.
@@ -40,6 +58,19 @@ func ExampleScrape() string {
 		if (strings.Contains(strings.ToLower(title), "burn ban is")) {
 			// fmt.Printf("Found %d: %s\n", i, title)
 			stringFound = title
+		}
+	})
+	return stringFound
+}
+
+func Comal() string {
+	doc := scrape("https://www.co.comal.tx.us/Fire_Marshal.htm")
+	var stringFound string
+	doc.Find("ul#menu-v li").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the content
+		content := s.Text()
+		if (strings.Contains(strings.ToLower(content), "burn ban is")) {
+			stringFound = content
 		}
 	})
 	return stringFound
