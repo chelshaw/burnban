@@ -8,9 +8,53 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
 )
 
+func ExampleScrape() string {
+  // Request the HTML page.
+  res, err := http.Get("https://www.co.comal.tx.us/Fire_Marshal.htm")
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer res.Body.Close()
+  if res.StatusCode != 200 {
+    log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+  }
+
+  // Load the HTML document
+  doc, err := goquery.NewDocumentFromReader(res.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // Find the review items
+  // mystring := doc.Find("#menu-v li").First().Text()
+	// fmt.Println(mystring)
+	var stringFound string
+	doc.Find("ul#menu-v li").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the title
+		title := s.Text()
+		// fmt.Printf("Reading line %d", i)
+		if (strings.Contains(strings.ToLower(title), "burn ban is")) {
+			// fmt.Printf("Found %d: %s\n", i, title)
+			stringFound = title
+		}
+	})
+	return stringFound
+}
+
+func main() {
+	fmt.Println("Getting data...")
+  found := ExampleScrape()
+	if (len(found) > 0) {
+		fmt.Println("Result was found")
+		fmt.Println(found)
+	} else {
+		fmt.Println("Sorry, we couldn't find an answer")
+	}
+}
 func getHtmlPage(webPage string) (string, error) {
 
     resp, err := http.Get(webPage)
@@ -72,14 +116,14 @@ func parseAndShow(text string) {
     }
 }
 
-func main() {
+// func main() {
 
-    webPage := "http://webcode.me/countries.html"
-    data, err := getHtmlPage(webPage)
+//     webPage := "http://webcode.me/countries.html"
+//     data, err := getHtmlPage(webPage)
 
-    if err != nil {
-        log.Fatal(err)
-    }
-		// fmt.Printf(data)
-    parseAndShow(data)
-}
+//     if err != nil {
+//         log.Fatal(err)
+//     }
+// 		// fmt.Printf(data)
+//     parseAndShow(data)
+// }
