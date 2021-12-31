@@ -63,7 +63,7 @@ func ExampleScrape() string {
 	return stringFound
 }
 
-func Comal() string {
+func Comal() (found bool, ban bool) {
 	doc := scrape("https://www.co.comal.tx.us/Fire_Marshal.htm")
 	var stringFound string
 	doc.Find("ul#menu-v li").Each(func(i int, s *goquery.Selection) {
@@ -73,10 +73,10 @@ func Comal() string {
 			stringFound = content
 		}
 	})
-	return stringFound
+	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "is on")
 }
 
-func Travis() string {
+func Travis() (found bool, ban bool) {
 	doc := scrape("https://www.traviscountytx.gov/fire-marshal/burn-ban")
 	var stringFound string
 	doc.Find("#burnban div").Each(func(i int, s *goquery.Selection) {
@@ -86,8 +86,26 @@ func Travis() string {
 			stringFound = content
 		}
 	})
-	return stringFound
+	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "is in effect")
 }
+
+// func FindCounty(name string) (bool, error) {
+// 	if name == "" {
+// 		return false, errors.New("No name provided")
+// 	}
+// 	var lowerName = strings.ToLower(name)
+// 	var result bool
+// 	switch lowerName {
+// 		case "comal": 
+// 			result = Comal()
+// 		case "travis": 
+// 			result = Travis()
+// 		default: 
+// 			fmt.Println("Default this")
+// 	}
+// 	// parse the result string
+// 	return result, nil
+// }
 
 // func BanOnImage() int64err {
 // 	// lekkewords := []string{

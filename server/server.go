@@ -32,16 +32,23 @@ func setupRouter() *gin.Engine {
 	})
 	
 	r.GET("/comal", func(c *gin.Context) {
-		found := burnban.Comal()
-		// found := burnban.Comal()
+		found,on := burnban.Comal()
 		
-		var resultString = "Sorry, we couldn't find an answer"
-		if (len(found) > 0) {
-			fmt.Println("Result was found")
-			fmt.Println(found)
-			resultString = found
-		} 
-		c.String(http.StatusOK, resultString)
+		if found != true {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
+		})
+		}
+
+		if on {
+			c.HTML(http.StatusOK, "on.tmpl", gin.H{
+				"county": "Comal",
+			})
+			} else {
+				c.HTML(http.StatusOK, "off.tmpl", gin.H{
+					"county": "Comal",
+				})
+				
+		}
 		
 		// c.HTML(http.StatusOK, "off.tmpl", gin.H{
 		// 	"title": "Main website",
@@ -50,16 +57,23 @@ func setupRouter() *gin.Engine {
 	})
 	
 	r.GET("/travis", func(c *gin.Context) {
-		found := burnban.Travis()
-		// found := burnban.Comal()
+		found,on := burnban.Travis()
 		
-		var resultString = "Sorry, we couldn't find an answer"
-		if (len(found) > 0) {
-			fmt.Println("Result was found")
-			fmt.Println(found)
-			resultString = found
-		} 
-		c.String(http.StatusOK, resultString)
+		if found != true {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
+		})
+		}
+
+		if on {
+			c.HTML(http.StatusOK, "on.tmpl", gin.H{
+				"county": "Travis",
+			})
+			} else {
+				c.HTML(http.StatusOK, "off.tmpl", gin.H{
+					"county": "Travis",
+				})
+				
+		}
 	})
 	
 
