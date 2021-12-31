@@ -14,9 +14,21 @@ func setupRouter() *gin.Engine {
 	// gin.DisableConsoleColor()
 	r := gin.Default()
 
+	r.LoadHTMLGlob("templates/*")
+	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
+	r.GET("/template", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "off.tmpl", gin.H{
+			"title": "Main website",
+			"county": "Here",
+		})
+	})
+
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
+	})
+	r.GET("/favicon.ico", func(c *gin.Context) {
+		c.String(http.StatusOK, "💩")
 	})
 	
 	r.GET("/comal", func(c *gin.Context) {
@@ -30,6 +42,11 @@ func setupRouter() *gin.Engine {
 			resultString = found
 		} 
 		c.String(http.StatusOK, resultString)
+		
+		// c.HTML(http.StatusOK, "off.tmpl", gin.H{
+		// 	"title": "Main website",
+		// 	"county": "Comal",
+		// })
 	})
 	
 	r.GET("/travis", func(c *gin.Context) {

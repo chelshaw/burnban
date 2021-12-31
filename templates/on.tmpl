@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Burn Ban</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+    <meta name="description" content="Is there a burn ban in your county?" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-cover flex justify-center items-center text-white min-h-screen text-center"
+    style="
+      background-image: url('https://images.unsplash.com/photo-1511027643875-5cbb0439c8f1');
+    "
+  >
+    <div class="bg-red-800 mix-blend-color-burn p-24">
+      <div class="border-b border-white pb-4 mb-4">
+        <p class="text-4xl uppercase">
+          {{ .county }}
+        </p>
+      </div>
+      <div>
+        <p class="text-4xl">
+          <span class="text-8xl font-bold underline">
+            Burn Ban is OFF
+          </span>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

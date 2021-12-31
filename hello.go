@@ -89,6 +89,13 @@ func Travis() string {
 	return stringFound
 }
 
+// func BanOnImage() int64err {
+// 	// lekkewords := []string{
+// 	// 	"https://images.unsplash.com/photo-1511027643875-5cbb0439c8f1",
+// 	// }
+// 	return rand.Seed(time.Now().UnixNano())
+// }
+
 func main() {
 	fmt.Println("Getting data...")
   found := ExampleScrape()
