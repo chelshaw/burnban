@@ -9,6 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type county struct {
+	county		string
+	state			string
+	link			string
+	selector 	string
+}
+
 func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
@@ -18,64 +25,67 @@ func setupRouter() *gin.Engine {
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	r.GET("/template", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "off.tmpl", gin.H{
-			"title": "Main website",
+			"link": "https://google.com",
 			"county": "Here",
 		})
-	})
-
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
-	r.GET("/favicon.ico", func(c *gin.Context) {
-		c.String(http.StatusOK, "💩")
 	})
 	
 	r.GET("/comal", func(c *gin.Context) {
 		found,on := burnban.Comal()
 		
 		if found != true {
-			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
-		})
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
 		}
 
+		var template = "off.tmpl"
 		if on {
-			c.HTML(http.StatusOK, "on.tmpl", gin.H{
-				"county": "Comal",
-			})
-			} else {
-				c.HTML(http.StatusOK, "off.tmpl", gin.H{
-					"county": "Comal",
-				})
-				
+			template = "on.tmpl"
 		}
 		
-		// c.HTML(http.StatusOK, "off.tmpl", gin.H{
-		// 	"title": "Main website",
-		// 	"county": "Comal",
-		// })
+		c.HTML(http.StatusOK, template, gin.H{
+			"county": "Comal",
+			"link": "https://www.co.comal.tx.us/Fire_Marshal.htm",
+		})
 	})
 	
 	r.GET("/travis", func(c *gin.Context) {
 		found,on := burnban.Travis()
 		
 		if found != true {
-			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
-		})
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
 		}
-
+		var template = "off.tmpl"
 		if on {
-			c.HTML(http.StatusOK, "on.tmpl", gin.H{
-				"county": "Travis",
-			})
-			} else {
-				c.HTML(http.StatusOK, "off.tmpl", gin.H{
-					"county": "Travis",
-				})
-				
+			template = "on.tmpl"
 		}
+		
+		c.HTML(http.StatusOK, template, gin.H{
+			"county": "Travis",
+			"link": "https://www.traviscountytx.gov/fire-marshal/burn-ban",
+		})
 	})
 	
+	r.GET("/hays", func(c *gin.Context) {
+		found,on := burnban.Hays()
+		
+		if found != true {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
+		}
+		var template = "off.tmpl"
+		if on {
+			template = "on.tmpl"
+		}
+		
+		c.HTML(http.StatusOK, template, gin.H{
+			"county": "Hays",
+			"link": "https://hayscountytx.com/law-enforcement/fire-marshal/",
+		})
+	})
+	
+	r.GET("/", func(c *gin.Context) {
+		// TODO: return list of all counties
+		c.HTML(http.StatusOK, "notfound.tmpl", gin.H{})
+	})
 
 	// Get user value
 	// r.GET("/user/:name", func(c *gin.Context) {
