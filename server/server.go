@@ -18,9 +18,22 @@ func setupRouter() *gin.Engine {
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
-	// Ping test
+	
 	r.GET("/comal", func(c *gin.Context) {
 		found := burnban.Comal()
+		// found := burnban.Comal()
+		
+		var resultString = "Sorry, we couldn't find an answer"
+		if (len(found) > 0) {
+			fmt.Println("Result was found")
+			fmt.Println(found)
+			resultString = found
+		} 
+		c.String(http.StatusOK, resultString)
+	})
+	
+	r.GET("/travis", func(c *gin.Context) {
+		found := burnban.Travis()
 		// found := burnban.Comal()
 		
 		var resultString = "Sorry, we couldn't find an answer"

@@ -76,6 +76,19 @@ func Comal() string {
 	return stringFound
 }
 
+func Travis() string {
+	doc := scrape("https://www.traviscountytx.gov/fire-marshal/burn-ban")
+	var stringFound string
+	doc.Find("#burnban div").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the content
+		content := s.Text()
+		if (strings.Contains(strings.ToLower(content), "burn ban is")) {
+			stringFound = content
+		}
+	})
+	return stringFound
+}
+
 func main() {
 	fmt.Println("Getting data...")
   found := ExampleScrape()
