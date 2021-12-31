@@ -2,12 +2,13 @@
 package main
 
 import (
-    "fmt"
-    "golang.org/x/net/html"
-    "io/ioutil"
-    "log"
-    "net/http"
-    "strings"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+
+	"golang.org/x/net/html"
 )
 
 func getHtmlPage(webPage string) (string, error) {
@@ -40,7 +41,7 @@ func parseAndShow(text string) {
     for {
 
         tt := tkn.Next()
-
+				fmt.Println(tt)
         switch {
 
         case tt == html.ErrorToken:
@@ -79,6 +80,6 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-
+		// fmt.Printf(data)
     parseAndShow(data)
 }
