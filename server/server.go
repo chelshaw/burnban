@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
 	"example/burnban"
+	"log"
+	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +20,7 @@ func setupRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 
 	r.LoadHTMLGlob("templates/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
@@ -82,6 +83,23 @@ func setupRouter() *gin.Engine {
 		})
 	})
 	
+	r.GET("/presidio", func(c *gin.Context) {
+		found,on := burnban.Presidio()
+		
+		if found != true {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
+		}
+		var template = "off.tmpl"
+		if on {
+			template = "on.tmpl"
+		}
+		
+		c.HTML(http.StatusOK, template, gin.H{
+			"county": "Presidio",
+			"link": "http://www.co.presidio.tx.us/",
+		})
+	})
+
 	r.GET("/", func(c *gin.Context) {
 		// TODO: return list of all counties
 		c.HTML(http.StatusOK, "notfound.tmpl", gin.H{})
@@ -123,10 +141,16 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	fmt.Println("Running program")
+	log.Println("Running program")
 	r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080");
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
+	r.Run(":" + port);
 	// OLD
 	// router := gin.Default()
 	// router.GET("/", )

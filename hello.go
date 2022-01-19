@@ -106,6 +106,23 @@ func Hays() (found bool, ban bool) {
 	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "ON")
 }
 
+func Presidio() (found bool, ban bool) {
+	doc := scrape("http://www.co.presidio.tx.us/")
+	var stringFound string
+	var finished = false
+	doc.Find("#ContentPlaceHolder4_ContentRepeater4_WidgetBox_3 span").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the content
+		content := s.Text()
+		if stringFound != "" && !finished {
+			stringFound = stringFound + content
+			finished = true
+		} else if (!finished && strings.Contains(strings.ToLower(content), "burn ban")) {
+			stringFound = content
+		}
+	})
+	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "in effect")
+}
+
 // func FindCounty(name string) (bool, error) {
 // 	if name == "" {
 // 		return false, errors.New("No name provided")
