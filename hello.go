@@ -71,16 +71,17 @@ func scrapeSite(url string, bodySelector string) (content string, err error){
 	}
 	res, getError := http.Get(url);
 	if getError != nil || res.StatusCode != 200 {
-		return "", getError
+		return "", errors.New("requested URL is unavailable")
 	}
+	
+	defer res.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
 		return "", err
 	}
-	body := doc.Find(bodySelector)
-	// return string of concatenated content instead?
-	body.Each(func(i int, s *goquery.Selection) {
+
+	doc.Find(bodySelector).Each(func(i int, s *goquery.Selection) {
 		// For each item found, get the content
 		contentString := s.Text()
 		log.Println("Content:", contentString)
@@ -94,39 +95,26 @@ func scrapeSite(url string, bodySelector string) (content string, err error){
 	return;
 }
 
-// func Comal() (found bool, ban bool) {
-// 	doc := scrape("https://www.co.comal.tx.us/Fire_Marshal.htm")
-// 	var stringFound string
-// 	doc.Find("ul#menu-v li").Each(func(i int, s *goquery.Selection) {
-// 		// For each item found, get the content
-// 		content := s.Text()
-// 		if (strings.Contains(strings.ToLower(content), "burn ban is")) {
-// 			stringFound = content
-// 		}
-// 	})
-// 	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "is on")
-// }
-
-func Travis() (found bool, ban bool) {
-	doc := scrape("https://www.traviscountytx.gov/fire-marshal/burn-ban")
-	var stringFound string
-	doc.Find("#burnban div").Each(func(i int, s *goquery.Selection) {
-		// For each item found, get the content
-		content := s.Text()
-		if (strings.Contains(strings.ToLower(content), "burn ban is")) {
-			stringFound = content
-		}
-	})
-	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "is in effect")
+func Travis(url string) (ban string, err error) {
+	content, err := scrapeSite(url, "#burnban div");
+	if err != nil {
+		return "", err
+	}
+	log.Println("Travis content scraped", content)
+	// Check for existence of key phrases
+	if strings.Contains(strings.ToLower(content), "burn ban is off") {
+		ban = "OFF"
+	} else if strings.Contains(strings.ToLower(content), "burn ban is on") || strings.Contains(strings.ToLower(content), "burn ban is currently:on")  {
+		ban = "ON"
+	}
+	return
 }
 
-func Hays() (ban string, url string, err error) {
-	url = "https://hayscountytx.com/law-enforcement/fire-marshal/"
+func Hays(url string) (ban string, err error) {
 	content, err := scrapeSite(url, ".entry-content p");
 	if err != nil {
-		return "", url, err
+		return "", err
 	}
-	log.Println("NO Error")
 	
 	// Check for existence of key phrases
 	if strings.Contains(strings.ToLower(content), "burn ban is currently:off") {
@@ -151,22 +139,19 @@ func Comal(url string) (ban string, err error) {
 	}
 	return
 }
-
-func Presidio() (found bool, ban bool) {
-	doc := scrape("http://www.co.presidio.tx.us/")
-	var stringFound string
-	var finished = false
-	doc.Find("#ContentPlaceHolder4_ContentRepeater4_WidgetBox_3 span").Each(func(i int, s *goquery.Selection) {
-		// For each item found, get the content
-		content := s.Text()
-		if stringFound != "" && !finished {
-			stringFound = stringFound + content
-			finished = true
-		} else if (!finished && strings.Contains(strings.ToLower(content), "burn ban")) {
-			stringFound = content
-		}
-	})
-	return stringFound != "", strings.Contains(strings.ToLower(stringFound), "in effect")
+func Presidio(url string) (ban string, err error) {
+	content, err := scrapeSite(url, "#ContentPlaceHolder4_ContentRepeater4_WidgetBox_3 span");
+	if err != nil {
+		return "", err
+	}
+	
+	// Check for existence of key phrases
+	if strings.Contains(strings.ToLower(content), "burn ban is off") {
+		ban = "OFF"
+	} else if strings.Contains(strings.ToLower(content), "burn ban in effect") || strings.Contains(strings.ToLower(content), "burn ban is currently:on")  {
+		ban = "ON"
+	}
+	return
 }
 
 // func FindCounty(name string) (bool, error) {
