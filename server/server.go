@@ -1,10 +1,11 @@
 package main
 
 import (
-	"example/burnban"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/chelshaw/burnban"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +16,20 @@ type county struct {
 	link			string
 	selector 	string
 }
+type CountyData struct {
+	Name  string  `json:"name"`
+	Source  string  `json:"source"`
+	Fetcher func(string)(string, error)
+}
+
+
 
 func setupRouter() *gin.Engine {
+	// Seed data
+	db := make(map[string]CountyData,10)
+	db["comal"] = CountyData{Name: "Comal", Source: "https://www.co.comal.tx.us/Fire_Marshal.htm", Fetcher: burnban.Comal}
+	// db["hays"] = CountyData{Name: "Hays", Source: "blah", Fetcher: burnban.Hays}
+
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	r := gin.Default()
@@ -31,23 +44,23 @@ func setupRouter() *gin.Engine {
 		})
 	})
 	
-	r.GET("/comal", func(c *gin.Context) {
-		found,on := burnban.Comal()
+	// r.GET("/comal", func(c *gin.Context) {
+	// 	found,on := burnban.Comal()
 		
-		if found != true {
-			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
-		}
+	// 	if found != true {
+	// 		c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
+	// 	}
 
-		var template = "off.tmpl"
-		if on {
-			template = "on.tmpl"
-		}
+	// 	var template = "off.tmpl"
+	// 	if on {
+	// 		template = "on.tmpl"
+	// 	}
 		
-		c.HTML(http.StatusOK, template, gin.H{
-			"county": "Comal",
-			"link": "https://www.co.comal.tx.us/Fire_Marshal.htm",
-		})
-	})
+	// 	c.HTML(http.StatusOK, template, gin.H{
+	// 		"county": "Comal",
+	// 		"link": "https://www.co.comal.tx.us/Fire_Marshal.htm",
+	// 	})
+	// })
 	
 	r.GET("/travis", func(c *gin.Context) {
 		found,on := burnban.Travis()
@@ -67,19 +80,23 @@ func setupRouter() *gin.Engine {
 	})
 	
 	r.GET("/hays", func(c *gin.Context) {
-		found,on := burnban.Hays()
-		
-		if found != true {
-			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{})
+		ban, url, err := burnban.Hays()
+		if err != nil || ban == "" {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
+				"error": err,
+				"county": "Hays",
+				"link": url,
+			})
+			return;
 		}
-		var template = "off.tmpl"
-		if on {
-			template = "on.tmpl"
+		var template = "on.tmpl"
+		if ban == "OFF" {
+			template = "off.tmpl"
 		}
 		
 		c.HTML(http.StatusOK, template, gin.H{
 			"county": "Hays",
-			"link": "https://hayscountytx.com/law-enforcement/fire-marshal/",
+			"link": url,
 		})
 	})
 	
@@ -104,8 +121,51 @@ func setupRouter() *gin.Engine {
 		// TODO: return list of all counties
 		c.HTML(http.StatusOK, "notfound.tmpl", gin.H{})
 	})
+	
+// 	var counties = []countyData{
+//     {ID: "comal", Name: "Comal", Source: "John Coltrane"},
+//     {ID: "hays", Name: "Hays", Source: "John Coltrane"},
+    
+// }
 
+	// counties["hays"] = 
+	r.GET("/county/:county", func(c *gin.Context) {
+		county := c.Params.ByName("county")
+		// If county doesn't exist, return error
+		value, ok := db[county]
+		log.Println("Getting county ", county, ok)
+		if !ok {
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
+				"county": county,
+				"error": "Some error occurred",
+			})
+			return;
+		}
+
+		ban, err := value.Fetcher(value.Source)
+		if err != nil || ban == "" {
+			log.Print(err)
+			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
+				"error": err.Error(),
+				"county": "Hays",
+				"link": value.Source,
+			})
+			return;
+		}
+
+		var template = "on.tmpl"
+		if ban == "OFF" {
+			template = "off.tmpl"
+		}
+		c.HTML(http.StatusOK, template, gin.H{
+			"county": value.Name,
+			"link": value.Source,
+		})
+	})
+
+	// https://github.com/gin-gonic/examples/blob/master/basic/main.go
 	// Get user value
+	// var db = make(map[string]string)
 	// r.GET("/user/:name", func(c *gin.Context) {
 	// 	user := c.Params.ByName("name")
 	// 	value, ok := db[user]
@@ -142,6 +202,7 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	log.Println("Running program")
+	
 	r := setupRouter()
 	// Listen and Server in 0.0.0.0:8080
 	port := os.Getenv("PORT")

@@ -1,16 +1,16 @@
-module example/burnban
+module github.com/chelshaw/burnban
 
 go 1.17
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/gin-gonic/gin v1.7.7
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 )
 
 require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect

@@ -27,9 +27,19 @@
       <div>
         <p class="text-4xl">
           <span class="text-4xl font-bold">
-            We couldn't find an answer
+            We couldn't find an answer for {{ .county }} County
           </span>
         </p>
+        <p><a
+            href="{{ .link }}"
+            target="_blank"
+            rel="noopener nofollower"
+            class="text-xl p-2 border-2 border-amber-400 text-amber-400 rounded-md hover:bg-transparent bg-black mix-blend-normal transition-colors"
+          >
+            Check For Yourself
+          </a>
+        </p>
+        <p>Error: {{ .error }}</p>
       </div>
     </div>
   </body>
