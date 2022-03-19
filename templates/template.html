@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Burn Ban</title>
+    <title>Burn Ban ON</title>
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
@@ -13,13 +13,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body
-    class="bg-cover flex justify-center items-center text-white min-h-screen text-center"
+    class="bg-cover bg-orange-300 flex justify-center items-center text-black min-h-screen text-center"
     style="
       background-image: url('https://images.unsplash.com/photo-1511027643875-5cbb0439c8f1');
     "
   >
-    <div class="bg-red-800 mix-blend-color-burn p-24">
-      <div class="border-b border-white pb-4 mb-4">
+    <a href="/">Back to all counties</a>
+    <div class="bg-orange-300 mix-blend-color-burn p-24">
+      <div class="border-b border-black pb-4 mb-4">
         <p class="text-4xl uppercase">
           {{ .county }} County
         </p>
@@ -32,7 +33,7 @@
         </p>
         <p class="pt-8">
           <a
-            href="https://google.com"
+            href="{{ .link }}"
             class="text-xl p-2 border-2 border-white text-white rounded-md hover:bg-transparent bg-black mix-blend-normal transition-colors"
           >
             Need Proof?

@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	ttlcache "github.com/ReneKroon/ttlcache/v2"
@@ -56,22 +57,25 @@ func setupRouter(db Counties) *gin.Engine {
 
 	r.LoadHTMLGlob("templates/*")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
-	r.GET("/template", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "off.tmpl", gin.H{
-			"link": "https://google.com",
-			"county": "Here",
-		})
-	})
+	// r.GET("/template", func(c *gin.Context) {
+	// 	c.HTML(http.StatusOK, "off.tmpl", gin.H{
+	// 		"link": "https://google.com",
+	// 		"county": "Here",
+	// 	})
+	// })
 
 	r.GET("/", func(c *gin.Context) {
 		// TODO: return list of all counties
-		c.HTML(http.StatusOK, "notfound.tmpl", gin.H{})
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"counties": db,
+		})
 	})
 	
 	r.GET("/county/:county", func(c *gin.Context) {
-		county := c.Params.ByName("county")
-		// If county doesn't exist, return error
+		county := strings.ToLower(c.Params.ByName("county"))
 		value, ok := db[county]
+
+		// If county doesn't exist, return error
 		if !ok {
 			// TODO: Swap out for "request county" page
 			c.HTML(http.StatusNotFound, "notfound.tmpl", gin.H{
@@ -127,7 +131,9 @@ func setupRouter(db Counties) *gin.Engine {
 		})
 		cache.Set(county, ban)
 	})
-	
+	r.NoRoute(func(c *gin.Context) {
+		c.HTML(http.StatusNotFound, "404.tmpl", gin.H{})
+	})
 	return r
 }
 
