@@ -6,12 +6,16 @@
 
 2. Install deps `go mod vendor`
 
-3. Run it `go run server/server.go`
+3. Run it `go run .`
 
 ## Deploy
 
 1. Build binary `go build -o bin/burnban -v`
 
-### NOTES
+2. `git push heroku main`
+
+### NEXT STEPS / NOTES
+
+- Figure out local vendoring bullshit
 
 - go mod edit -replace example.com/greetings=../greetings
