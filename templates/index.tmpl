@@ -14,24 +14,24 @@
       background-image: url('/assets/firewood.jpg');
     "
   >
-    <div class="bg-sky-700 text-white mix-blend-hard-light p-24 max-w-2xl my-5">
-        <h1 class="text-8xl font-bold mb-4">Hold the firewood!</h1>
-        <p class="text-4xl border-b border-white pb-4 mb-4">
-          First find out if your Texas county has issued a burn ban:
+    <div class="bg-sky-700 text-white mix-blend-hard-light p-4 md:p-24 mx-auto max-w-2xl my-5">
+      <h1 class="text-6xl md:text-8xl font-bold mb-4">Hold the firewood!</h1>
+      <p class="text-2xl md:text-4xl border-b border-white pb-4 mb-4">
+        First find out if your Texas county has issued a burn ban:
+      </p>
+  
+      {{ range .counties }}
+        <p class="text-2xl md:text-4xl uppercase hover:underline py-2">
+          <a href="/county/{{ .Name }}">
+          {{ .Name }}
+          </a>
         </p>
-    
-        {{ range .counties }}
-          <p class="text-4xl uppercase hover:underline py-2">
-            <a href="/county/{{ .Name }}">
-            {{ .Name }}
-            </a>
-          </p>
-        {{ end }}
-        <p class="text-2xl hover:underline pt-4 border-t border-white mt-4">
-            <a href="/request-county">
-              Request your county
-            </a>
-          </p>
+      {{ end }}
+      <p class="text-2xl hover:underline pt-4 border-t border-white mt-4">
+        <a href="/request-county">
+          Request your county
+        </a>
+      </p>
     </div>
   </body>
 </html>

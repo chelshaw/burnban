@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const CACHE_DURATION = time.Duration(10 * time.Hour)
+const CACHE_DURATION = time.Duration(10 * time.Minute)
 type CountyData struct {
 	Name  string  `json:"name"`
 	Source  string  `json:"source"`
