@@ -121,9 +121,9 @@ func ExampleScrape() string {
 // }
 
 // func BanOnImage() int64err {
-// 	// lekkewords := []string{
-// 	// 	"https://images.unsplash.com/photo-1511027643875-5cbb0439c8f1",
-// 	// }
+	// lekkewords := []string{
+	// 	"https://images.unsplash.com/photo-1511027643875-5cbb0439c8f1",
+	// }
 // 	return rand.Seed(time.Now().UnixNano())
 // }
 

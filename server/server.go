@@ -56,6 +56,7 @@ func setupRouter(db Counties) *gin.Engine {
 	r.SetTrustedProxies(nil)
 
 	r.LoadHTMLGlob("templates/*")
+	// r.LoadHTMLFiles("assets/")
 	//router.LoadHTMLFiles("templates/template1.html", "templates/template2.html")
 	// r.GET("/template", func(c *gin.Context) {
 	// 	c.HTML(http.StatusOK, "off.tmpl", gin.H{
@@ -70,6 +71,9 @@ func setupRouter(db Counties) *gin.Engine {
 			"counties": db,
 		})
 	})
+
+	// r.Static("/assets", "assets")
+	r.Static("/assets", "./assets")
 	
 	r.GET("/county/:county", func(c *gin.Context) {
 		county := strings.ToLower(c.Params.ByName("county"))
