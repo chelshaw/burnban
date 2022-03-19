@@ -11,3 +11,7 @@
 ## Deploy
 
 1. Build binary `go build -o bin/burnban -v`
+
+### NOTES
+
+- go mod edit -replace example.com/greetings=../greetings
